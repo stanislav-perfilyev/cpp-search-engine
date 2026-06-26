@@ -1,0 +1,9 @@
+{
+    "answers": {
+        "request001": {
+            "docid": 3,
+            "rank": 0.75,
+            "result": true
+        }
+    }
+}
