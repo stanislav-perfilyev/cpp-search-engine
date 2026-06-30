@@ -1,10 +1,10 @@
 #include "ConverterJSON.h"
+#include "exceptions.h"
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <filesystem>
-#include <stdexcept>
 
 using json = nlohmann::json;
 
@@ -21,33 +21,33 @@ std::string ConverterJSON::ResolveConfigPath() const {
     if (fs::exists("../config.json")) {
         return fs::path("../config.json").lexically_normal().string();
     }
-    throw std::runtime_error("config file is missing");
+    throw ConfigError("config file is missing");
 }
 
 json ConverterJSON::LoadConfig() {
     const std::string config_path = ResolveConfigPath();
     std::ifstream config_file(config_path);
     if (!config_file.is_open()) {
-        throw std::runtime_error("config file is missing");
+        throw ConfigError("config file is missing");
     }
 
     json config;
     try {
         config_file >> config;
     } catch (const json::parse_error&) {
-        throw std::runtime_error("config file parse error");
+        throw ConfigError("config file parse error");
     }
 
     if (!config.contains("config") || !config["config"].is_object()) {
-        throw std::runtime_error("config file is empty");
+        throw ConfigError("config file is empty");
     }
 
     if (!config["config"].contains("version") || !config["config"]["version"].is_string()) {
-        throw std::runtime_error("config.json has incorrect file version");
+        throw ConfigError("config.json has incorrect file version");
     }
 
     if (config["config"]["version"].get<std::string>() != kExpectedVersion) {
-        throw std::runtime_error("config.json has incorrect file version");
+        throw ConfigError("config.json has incorrect file version");
     }
 
     return config;

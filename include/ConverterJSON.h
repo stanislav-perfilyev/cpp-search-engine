@@ -4,40 +4,47 @@
 #include <string>
 #include <nlohmann/json.hpp>
 
+#include "exceptions.h"
+
 /**
- * Класс для работы с JSON-файлами
+ * @brief Works with the search-engine JSON configuration and result files.
+ *
+ * Reads config.json / requests.json; writes answers.json.
+ * Throws ConfigError on any config problem (missing file, bad JSON, version
+ * mismatch).  Callers must not ignore the return values of Get* methods —
+ * they are annotated [[nodiscard]].
  */
 class ConverterJSON {
 public:
     ConverterJSON() = default;
 
     /**
-     * Метод получения содержимого файлов
-     * @return Возвращает список с содержимым файлов перечисленных
-     * в config.json
+     * @brief Read document contents listed in config.json.
+     * @return One string per configured file (empty string for missing files).
+     * @throws ConfigError if config.json is absent, malformed, or version mismatch.
      */
-    std::vector<std::string> GetTextDocuments();
+    [[nodiscard]] std::vector<std::string> GetTextDocuments();
 
     /**
-     * Метод считывает поле max_responses для определения предельного
-     * количества ответов на один запрос
-     * @return максимальное количество ответов на один запрос
+     * @brief Read max_responses from config.json.
+     * @return Maximum number of search results per query (default 5).
+     * @throws ConfigError if config.json is absent or malformed.
      */
-    int GetResponsesLimit();
+    [[nodiscard]] int GetResponsesLimit();
 
     /**
-     * Метод получения запросов из файла requests.json
-     * @return возвращает список запросов из файла requests.json
+     * @brief Read search queries from requests.json.
+     * @return List of query strings; empty if requests.json is absent.
      */
-    std::vector<std::string> GetRequests();
+    [[nodiscard]] std::vector<std::string> GetRequests();
 
     /**
-     * Положить в файл answers.json результаты поисковых запросов
+     * @brief Write search results to answers.json.
+     * @param answers Per-query list of (doc_id, rank) pairs.
      */
     void putAnswers(std::vector<std::vector<std::pair<int, float>>> answers);
 
 private:
-    nlohmann::json LoadConfig();
-    std::string ResolveConfigPath() const;
+    [[nodiscard]] nlohmann::json LoadConfig();
+    [[nodiscard]] std::string    ResolveConfigPath() const;
 };
-

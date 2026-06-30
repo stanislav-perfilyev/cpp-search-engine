@@ -7,6 +7,7 @@
 #include "ConverterJSON.h"
 #include "InvertedIndex.h"
 #include "SearchServer.h"
+#include "exceptions.h"
 #include <nlohmann/json.hpp>
 
 using namespace std;
@@ -294,7 +295,7 @@ TEST(TestCaseConverterJSON, TestConfigFileMissingThrows) {
     fs::current_path(run_dir);
 
     ConverterJSON converter;
-    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), std::runtime_error);
+    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), ConfigError);
 
     CleanupTestRoot(test_root);
 }
@@ -308,7 +309,7 @@ TEST(TestCaseConverterJSON, TestConfigParseErrorThrows) {
     fs::current_path(test_root);
 
     ConverterJSON converter;
-    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), std::runtime_error);
+    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), ConfigError);
 
     CleanupTestRoot(test_root);
 }
@@ -322,7 +323,7 @@ TEST(TestCaseConverterJSON, TestConfigVersionMismatchThrows) {
     fs::current_path(test_root);
 
     ConverterJSON converter;
-    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), std::runtime_error);
+    EXPECT_THROW(static_cast<void>(converter.GetTextDocuments()), ConfigError);
 
     CleanupTestRoot(test_root);
 }

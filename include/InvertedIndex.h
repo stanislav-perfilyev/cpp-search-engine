@@ -1,37 +1,45 @@
 #pragma once
 
-#include <vector>
-#include <string>
 #include <map>
+#include <string>
+#include <vector>
+
+#include "exceptions.h"
 
 struct Entry {
     size_t doc_id, count;
 
-    // Данный оператор необходим для проведения тестовых сценариев
     bool operator==(const Entry& other) const {
         return (doc_id == other.doc_id && count == other.count);
     }
 };
 
+/**
+ * @brief Inverted index over a document collection.
+ *
+ * Call UpdateDocumentBase() to (re-)index documents, then query with
+ * GetWordCount().  All query results must be used — [[nodiscard]].
+ * Throws IndexError if indexing fails.
+ */
 class InvertedIndex {
 public:
     InvertedIndex() = default;
 
     /**
-     * Обновить или заполнить базу документов, по которой будем совершать поиск
-     * @param input_docs содержимое документов
+     * @brief (Re-)build the index from the given document texts.
+     * @param input_docs Document contents (one string per document).
+     * @throws IndexError on internal failure.
      */
     void UpdateDocumentBase(std::vector<std::string> input_docs);
 
     /**
-     * Метод определяет количество вхождений слова word в загруженной базе документов
-     * @param word слово, частоту вхождений которого необходимо определить
-     * @return возвращает подготовленный список с частотой слов
+     * @brief Return per-document occurrence counts for a word.
+     * @param word The word to look up.
+     * @return Sorted list of (doc_id, count) entries; empty if word absent.
      */
-    std::vector<Entry> GetWordCount(const std::string& word);
+    [[nodiscard]] std::vector<Entry> GetWordCount(const std::string& word);
 
 private:
-    std::vector<std::string> docs; // список содержимого документов
-    std::map<std::string, std::vector<Entry>> freq_dictionary; // частотный словарь
+    std::vector<std::string>              docs;
+    std::map<std::string, std::vector<Entry>> freq_dictionary;
 };
-
