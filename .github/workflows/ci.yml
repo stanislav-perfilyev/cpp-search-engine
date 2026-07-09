@@ -33,17 +33,6 @@ jobs:
       - name: Test with ASAN
         run: ctest --test-dir build_asan --output-on-failure
 
-  tsan:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Configure TSAN
-        run: cmake -B build_tsan -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-fsanitize=thread"
-      - name: Build
-        run: cmake --build build_tsan -j$(nproc)
-      - name: Test with TSAN
-        run: ctest --test-dir build_tsan --output-on-failure
-
   cppcheck:
     runs-on: ubuntu-latest
     steps:

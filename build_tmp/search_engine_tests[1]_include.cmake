@@ -1,5 +1,0 @@
-if(EXISTS "/mnt/d/claude/Projects/Устройство на работу/GitHub-repos/cpp-search-engine/build_tmp/search_engine_tests[1]_tests.cmake")
-  include("/mnt/d/claude/Projects/Устройство на работу/GitHub-repos/cpp-search-engine/build_tmp/search_engine_tests[1]_tests.cmake")
-else()
-  add_test(search_engine_tests_NOT_BUILT search_engine_tests_NOT_BUILT)
-endif()
