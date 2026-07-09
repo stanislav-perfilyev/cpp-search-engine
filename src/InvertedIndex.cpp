@@ -25,8 +25,8 @@ void InvertedIndex::UpdateDocumentBase(std::vector<std::string> input_docs) {
 
         // Добавление в общий частотный словарь
         std::lock_guard<std::mutex> lock(index_mutex);
-        for (const auto& [word, count] : local_word_count) {
-            freq_dictionary[word].push_back({doc_id, count});
+        for (const auto& [w, cnt] : local_word_count) {
+            freq_dictionary[w].push_back({doc_id, cnt});
         }
     };
 

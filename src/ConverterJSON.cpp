@@ -60,7 +60,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
 
     // Вывод названия поискового движка
     if (config["config"].contains("name") && config["config"]["name"].is_string()) {
-        std::cout << "Starting " << config["config"]["name"] << std::endl;
+        std::cout << "Starting " << config["config"]["name"] << '\n';
     }
 
     // Чтение списка файлов
@@ -77,7 +77,7 @@ std::vector<std::string> ConverterJSON::GetTextDocuments() {
             std::ifstream file(resolved_path);
 
             if (!file.is_open()) {
-                std::cerr << "Warning: cannot open file " << resolved_path.string() << std::endl;
+                std::cerr << "Warning: cannot open file " << resolved_path.string() << '\n';
                 // Keep doc index aligned with config.files even if file is missing.
                 documents.emplace_back();
                 continue;
@@ -111,7 +111,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
 
     std::ifstream requests_file(requests_path);
     if (!requests_file.is_open()) {
-        std::cerr << "Warning: requests.json file is missing: " << requests_path.string() << std::endl;
+        std::cerr << "Warning: requests.json file is missing: " << requests_path.string() << '\n';
         return requests;
     }
 
@@ -119,7 +119,7 @@ std::vector<std::string> ConverterJSON::GetRequests() {
     try {
         requests_file >> requests_json;
     } catch (const json::parse_error&) {
-        std::cerr << "Error parsing requests.json" << std::endl;
+        std::cerr << "Error parsing requests.json" << '\n';
         return requests;
     }
 

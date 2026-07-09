@@ -6,6 +6,7 @@
 
 #include "exceptions.h"
 
+/// @brief Per-document term frequency: number of times a word appears in doc_id.
 struct Entry {
     size_t doc_id, count;
 

@@ -4,21 +4,21 @@ project(search_engine)
 set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include resources src)
-# Подключение библиотеки nlohmann/json
+
 include(FetchContent)
 set(FETCHCONTENT_TRY_FIND_PACKAGE_MODE NEVER)
+
 FetchContent_Declare(
-        json
-        URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    json
+    URL https://github.com/nlohmann/json/releases/download/v3.11.2/json.tar.xz
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 FetchContent_MakeAvailable(json)
 
-# Подключение Google Test
 FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-        DOWNLOAD_EXTRACT_TIMESTAMP TRUE
+    googletest
+    URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
 if(MSVC)
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
@@ -31,25 +31,26 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 enable_testing()
 
-# Библиотека с общим кодом
-add_library(search_engine_lib
-        src/ConverterJSON.cpp
-        src/InvertedIndex.cpp
-        src/SearchServer.cpp
-)
+set(COMMON_FLAGS -Wall -Wextra -Werror)
 
+add_library(search_engine_lib
+    src/ConverterJSON.cpp
+    src/InvertedIndex.cpp
+    src/SearchServer.cpp
+)
 target_include_directories(search_engine_lib PUBLIC include)
 target_link_libraries(search_engine_lib PUBLIC nlohmann_json::nlohmann_json)
+target_compile_options(search_engine_lib PRIVATE ${COMMON_FLAGS})
 
-# Исполняемый файл с тестами
-add_executable(search_engine_tests tests/main.cpp)
+add_executable(search_engine_tests tests/test_search_engine.cpp)
 target_include_directories(search_engine_tests PRIVATE include)
 target_link_libraries(search_engine_tests PRIVATE search_engine_lib gtest_main)
+target_compile_options(search_engine_tests PRIVATE ${COMMON_FLAGS})
 
-# Основное приложение
 add_executable(search_app src/search_app.cpp)
 target_include_directories(search_app PRIVATE include)
 target_link_libraries(search_app PRIVATE search_engine_lib)
+target_compile_options(search_app PRIVATE ${COMMON_FLAGS})
 
 include(GoogleTest)
 gtest_discover_tests(search_engine_tests)

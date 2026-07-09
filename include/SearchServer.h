@@ -1,11 +1,13 @@
 #pragma once
 
+#include <map>
 #include <string>
 #include <vector>
 
 #include "InvertedIndex.h"
 #include "exceptions.h"
 
+/// @brief Search result: a document with its relative relevance score.
 struct RelativeIndex {
     size_t doc_id;
     float  rank;
@@ -44,4 +46,11 @@ public:
 private:
     InvertedIndex& _index;
     int            _max_responses;
+
+    [[nodiscard]] std::vector<std::pair<std::string, size_t>>
+        buildSortedWordList(const std::string& query);
+    [[nodiscard]] std::map<size_t, float>
+        computeDocRelevance(const std::vector<std::pair<std::string, size_t>>& words);
+    [[nodiscard]] std::vector<RelativeIndex>
+        searchSingle(const std::string& query);
 };
